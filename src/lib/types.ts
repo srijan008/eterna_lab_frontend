@@ -4,21 +4,29 @@ export interface Token {
   id: string;
   symbol: string;
   name: string;
-  chain: "SOL" | "ETH" | "BTC" | "OTHER";
+  imageUrl: string;
+
+  // Raw numeric values
   price: number;
-  priceChange24h: number; // in %
-  liquidity: number;
   marketCap: number;
+  liquidity: number;
   volume24h: number;
   txCount24h: number;
   holders: number;
-  createdAt: string; // ISO string
-  category: TokenCategory;
 
-  // 🔥 new
-  ageLabel?: string; 
-  imageUrl: string;
+  
+  marketCapLabel?: string; 
+  volumeLabel?: string;    
+  liquidityLabel?: string; 
+  change24hLabel?: string;   
+  ageLabel?: string;         
+
+  category?: string;
+
+  
+  createdAt?: string;
 }
+
 
 
 export type SortKey =
