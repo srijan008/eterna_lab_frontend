@@ -12,6 +12,10 @@ import { fetchTokens } from "@/lib/mockApi";
 import { TokenCardMobile } from "./TokenCardMobile";
 import { TokenCardDesktop } from "./TokenCardDesktop";
 
+/* NEW MOBILE COMPONENTS (Phase 2) */
+import { MobileHeader } from "./MobileHeader";
+import { MobileTabs } from "./MobileTabs";
+
 const categoryLabel: Record<TokenCategory, string> = {
   NEW_PAIRS: "New Pairs",
   FINAL_STRETCH: "Final Stretch",
@@ -20,6 +24,7 @@ const categoryLabel: Record<TokenCategory, string> = {
 
 const categories: TokenCategory[] = ["NEW_PAIRS", "FINAL_STRETCH", "MIGRATED"];
 
+/* DESKTOP TABS */
 const CategoryTabs: React.FC = () => {
   const dispatch = useAppDispatch();
   const active = useAppSelector((s) => s.tokens.activeCategory);
@@ -46,7 +51,7 @@ const CategoryTabs: React.FC = () => {
   );
 };
 
-// small hook: fetch + filter + sort tokens by category
+/* Data Fetch + Filter + Sort */
 const useTokensByCategory = (category: TokenCategory, search: string) => {
   const query = useQuery<Token[]>({
     queryKey: ["tokens", category],
@@ -66,7 +71,6 @@ const useTokensByCategory = (category: TokenCategory, search: string) => {
       );
     }
 
-    // sort similar to Axiom: bigger market cap & volume first
     return [...filtered].sort((a, b) => {
       if (b.marketCap !== a.marketCap) return b.marketCap - a.marketCap;
       return b.volume24h - a.volume24h;
@@ -76,6 +80,7 @@ const useTokensByCategory = (category: TokenCategory, search: string) => {
   return { ...query, rows };
 };
 
+/* DESKTOP COLUMN COMPONENT */
 interface DesktopColumnProps {
   title: string;
   tokens: Token[];
@@ -98,6 +103,7 @@ const DesktopColumn: React.FC<DesktopColumnProps> = ({
         <h3 className="text-xs font-semibold text-slate-100">{title}</h3>
         <span className="text-[11px] text-slate-500">{tokens.length} pairs</span>
       </div>
+
       <div className="max-h-[520px] space-y-1 overflow-auto p-1.5">
 
         {isLoading &&
@@ -130,12 +136,10 @@ export const TokenTable: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((s) => s.tokens);
 
-  // one query per column
   const newPairs = useTokensByCategory("NEW_PAIRS", state.search);
   const finalStretch = useTokensByCategory("FINAL_STRETCH", state.search);
   const migrated = useTokensByCategory("MIGRATED", state.search);
 
-  // live price feeds per column
   usePriceFeed("NEW_PAIRS", newPairs.data);
   usePriceFeed("FINAL_STRETCH", finalStretch.data);
   usePriceFeed("MIGRATED", migrated.data);
@@ -150,20 +154,28 @@ export const TokenTable: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <section className="w-full max-w-full flex flex-col gap-2 px-2 sm:px-3 md:px-4">
+      <section className="
+        w-full max-w-full flex flex-col gap-2 
+        px-0 sm:px-3 md:px-4 
+        bg-[#0b0f15] 
+        min-h-screen
+      ">
 
-        {/* Header */}
-        <div className="flex flex-wrap items-center gap-3">
+        {/* MOBILE HEADER (Phase 2) */}
+        <div className="sm:hidden">
+          <MobileHeader />
+        </div>
+
+        {/* DESKTOP HEADER */}
+        <div className="hidden sm:flex flex-wrap items-center gap-3 mt-3 px-2">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-semibold text-slate-100 sm:text-base">
               Pulse · Token Discovery
             </h2>
-            <Badge variant="default" className="hidden sm:inline-flex">
-              Live
-            </Badge>
+            <Badge variant="default">Live</Badge>
           </div>
 
-          {/* desktop / tablet search */}
+          {/* Desktop Search */}
           <div className="ml-auto hidden sm:block">
             <div className="relative w-full max-w-xs">
               <input
@@ -172,29 +184,39 @@ export const TokenTable: React.FC = () => {
                   dispatch(setSearch(e.target.value.toUpperCase()))
                 }
                 placeholder="Search by token or CA..."
-                className="h-8 w-full rounded-full border border-slate-800 bg-slate-900/60 px-3 pr-8 text-xs text-slate-100 placeholder:text-slate-500 focus:border-slate-500 focus:outline-none"
+                className="
+                  h-8 w-full rounded-full border border-slate-800 
+                  bg-slate-900/60 px-3 pr-8 text-xs text-slate-100 
+                  placeholder:text-slate-500
+                "
               />
             </div>
           </div>
         </div>
 
-        {/* mobile controls: tabs + search under header */}
-        <div className="mt-2 flex flex-col gap-2 sm:hidden">
-          <CategoryTabs />
-          <div className="relative w-full">
-            <input
-              value={state.search}
-              onChange={(e) =>
-                dispatch(setSearch(e.target.value.toUpperCase()))
-              }
-              placeholder="Search by token or CA..."
-              className="h-8 w-full rounded-full border border-slate-800 bg-slate-900/60 px-3 pr-8 text-xs text-slate-100 placeholder:text-slate-500 focus:border-slate-500 focus:outline-none"
-            />
-          </div>
+        {/* MOBILE CATEGORY TABS (Phase 2) */}
+        <div className="sm:hidden">
+          <MobileTabs />
         </div>
 
-        {/* DESKTOP: 3 columns (Axiom style) */}
-        <div className="hidden gap-2 lg:grid lg:grid-cols-3">
+        {/* MOBILE SEARCH (Phase 2) */}
+        <div className="sm:hidden px-3 mt-2 mb-1">
+          <input
+            value={state.search}
+            onChange={(e) =>
+              dispatch(setSearch(e.target.value.toUpperCase()))
+            }
+            placeholder="Search by token or CA..."
+            className="
+              w-full rounded-full bg-slate-900 border border-slate-800 
+              px-4 py-2 text-[13px] text-slate-200 
+              placeholder-slate-500
+            "
+          />
+        </div>
+
+        {/* DESKTOP: 3-COLUMN LAYOUT */}
+        <div className="hidden lg:grid lg:grid-cols-3 gap-2 mt-3 px-2">
           <DesktopColumn
             title="New Pairs"
             tokens={newPairs.rows}
@@ -218,10 +240,10 @@ export const TokenTable: React.FC = () => {
           />
         </div>
 
-        {/* MOBILE / TABLET: single list with tabs */}
-        <div className="block lg:hidden">
-          <div className="mt-2 rounded-xl border border-slate-800 bg-slate-950/80">
-            <div className="max-h-[520px] space-y-3 overflow-auto p-2">
+        {/* MOBILE SINGLE LIST */}
+        <div className="block lg:hidden px-2 mt-1">
+          <div className="rounded-xl border border-slate-800 bg-slate-950/80 py-2">
+            <div className="max-h-[520px] space-y-3 overflow-auto px-2">
               {activeData.isLoading &&
                 Array.from({ length: 6 }).map((_, i) => (
                   <div
