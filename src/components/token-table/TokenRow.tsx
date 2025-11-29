@@ -145,7 +145,7 @@ export const TokenRow: React.FC<Props> = React.memo(({ token }) => {
         </td>
         <td className="px-3 py-2 text-right">
           <span className="text-xs text-slate-400">
-            {formatTimeAgo(token.createdAt)}
+            {formatTimeAgo(token.createdAt ?? "")}
           </span>
         </td>
       </tr>
