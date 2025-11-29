@@ -14,7 +14,11 @@ export interface Token {
   holders: number;
   createdAt: string; // ISO string
   category: TokenCategory;
+
+  // 🔥 new
+  imageUrl: string;
 }
+
 
 export type SortKey =
   | "price"
