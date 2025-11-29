@@ -6,26 +6,29 @@ export interface Token {
   name: string;
   imageUrl: string;
 
-  // Raw numeric values
+  // Numeric values (raw)
   price: number;
   marketCap: number;
   liquidity: number;
   volume24h: number;
   txCount24h: number;
   holders: number;
+  priceChange24h: number;   // +12.5, -8.2
 
-  
-  marketCapLabel?: string; 
-  volumeLabel?: string;    
-  liquidityLabel?: string; 
-  change24hLabel?: string;   
-  ageLabel?: string;         
+  // Formatted UI labels (Axiom style)
+  marketCapLabel?: string;   // "$48.2K"
+  volumeLabel?: string;      // "$12.1K"
+  liquidityLabel?: string;   // "$22.4K"
+  change24hLabel?: string;   // "+12%" or "-5%"
+  ageLabel?: string;         // "2m", "5s", "1h"
 
-  category?: string;
+  // Category for tabs
+  category?: "NEW_PAIRS" | "FINAL_STRETCH" | "MIGRATED";
 
-  
-  createdAt?: string;
+  // Timestamp for age calculation
+  createdAt?: string;        // "2024-02-21T12:00:00Z"
 }
+
 
 
 
