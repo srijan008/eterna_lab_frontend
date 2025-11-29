@@ -16,6 +16,7 @@ export interface Token {
   category: TokenCategory;
 
   // 🔥 new
+  ageLabel?: string; 
   imageUrl: string;
 }
 
