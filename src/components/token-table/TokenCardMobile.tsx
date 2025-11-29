@@ -1,89 +1,95 @@
-"use client";
-
-import React from "react";
 import { Token } from "@/lib/types";
-import { formatCurrency, formatPercent } from "@/lib/format";
-import { Badge } from "@/components/ui/Badge";
 
-export const TokenCardMobile: React.FC<{ token: Token }> = ({ token }) => {
-  const pctClass =
-    token.priceChange24h > 0
-      ? "text-emerald-400"
-      : token.priceChange24h < 0
-      ? "text-rose-400"
-      : "text-slate-300";
-
+export const TokenCardMobile = ({ token }: { token: Token }) => {
   return (
-    <article
-  className="
-    w-full rounded-md border border-slate-800 bg-slate-950/90 
-    p-2 transition-all duration-150 
-    hover:border-slate-600 hover:bg-slate-900 cursor-pointer
-  "
->
+    <div className="
+      w-full rounded-xl border border-slate-800 bg-[#0b0f15] 
+      px-3 py-2 mb-2 shadow-sm
+    ">
+      
+      {/* TOP ROW — ICON + NAME + MC/PRICE */}
+      <div className="flex items-start gap-3">
 
-
-      <div className="grid grid-cols-[auto,1fr,auto] gap-3">
-        {/* Image */}
-        <div className="flex items-start">
+        {/* Token Image */}
+        <div className="h-12 w-12 rounded-md overflow-hidden border border-slate-700">
           <img
             src={token.imageUrl}
-            alt={token.name}
-            className="h-10 w-10 rounded-md object-cover"
+            alt={token.symbol}
+            className="h-full w-full object-cover"
           />
         </div>
 
-        {/* Middle info */}
-        <div className="min-w-0">
-          <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <div className="flex items-center gap-1">
-                <h3 className="truncate text-sm font-semibold text-slate-100">
-                  {token.symbol}
-                </h3>
-                <span className="truncate text-[11px] text-slate-400 max-w-[110px]">
-                  {token.name}
-                </span>
-              </div>
-              <div className="mt-1 flex items-center gap-2 text-[11px] text-slate-500">
-                <span>{token.chain}</span>
-                <span className={pctClass}>{formatPercent(token.priceChange24h)}</span>
-              </div>
+        {/* Name + icons + small stats */}
+        <div className="flex flex-col flex-1 min-w-0">
+          
+          {/* Name Row */}
+          <div className="flex items-center gap-1 truncate">
+            <span className="text-white font-semibold text-[14px] truncate">
+              {token.symbol}
+            </span>
+            <span className="text-slate-400 text-[12px] truncate">
+              {token.name}
+            </span>
+          </div>
+
+          {/* AGE + ICON BAR */}
+          <div className="flex items-center gap-2 text-[11px] text-slate-300 mt-[2px]">
+            {/* Age */}
+            <span className="text-emerald-400 font-semibold">
+              {token.ageLabel}
+            </span>
+
+            {/* Icon row similar to Axiom */}
+            <div className="flex items-center gap-1 opacity-80">
+              <span>👤</span><span>{token.txCount24h}</span>
+              <span>🕒</span><span>{token.holders}</span>
+              <span>🏆</span><span>4/5</span>
             </div>
           </div>
 
-          {/* bottom badges */}
-          <div className="mt-3 flex flex-wrap items-center gap-1">
-            <Badge
-              variant={token.priceChange24h >= 0 ? "green" : "red"}
-              className="text-[10px]"
-            >
-              {formatPercent(token.priceChange24h)}
-            </Badge>
-            <Badge variant="default" className="text-[10px]">
-              LQ {formatCurrency(token.liquidity)}
-            </Badge>
-            <Badge variant="default" className="text-[10px]">
-              TX {token.txCount24h}
-            </Badge>
-            <Badge variant="default" className="text-[10px]">
-              {token.holders} holders
-            </Badge>
+        </div>
+
+        {/* Market Cap cluster (RIGHT) */}
+        <div className="text-right whitespace-nowrap">
+          <div className="text-slate-300 text-[11px]">MC</div>
+          <div className="text-blue-400 text-[13px] font-semibold">
+            ${token.marketCapLabel}
+          </div>
+          <div className="text-slate-300 text-[11px] mt-1">V</div>
+          <div className="text-slate-200 text-[12px]">
+            ${token.volumeLabel}
           </div>
         </div>
 
-        {/* Right MC/V block */}
-        <div className="flex flex-col items-end justify-start gap-1">
-          <div className="text-[10px] uppercase text-slate-500">MC</div>
-          <div className="text-xs font-mono text-slate-100">
-            {formatCurrency(token.marketCap)}
-          </div>
-          <div className="mt-1 text-[10px] uppercase text-slate-500">V</div>
-          <div className="text-xs font-mono text-slate-100">
-            {formatCurrency(token.volume24h)}
-          </div>
-        </div>
       </div>
-    </article>
+
+      {/* METRICS BADGE ROW */}
+      <div className="flex flex-wrap gap-1 mt-3 text-[10px]">
+        <span className="px-2 py-[2px] rounded-full bg-green-900/40 text-emerald-400">
+          {token.change24hLabel}
+        </span>
+        <span className="px-2 py-[2px] rounded-full bg-slate-800 text-slate-300">
+          LQ {token.liquidityLabel}
+        </span>
+        <span className="px-2 py-[2px] rounded-full bg-slate-800 text-slate-300">
+          TX {token.txCount24h}
+        </span>
+        <span className="px-2 py-[2px] rounded-full bg-slate-800 text-slate-300">
+          {token.holders} holders
+        </span>
+      </div>
+
+      {/* BUY BUTTON LIKE AXIOM */}
+      <div className="mt-3 flex justify-end">
+        <button className="
+          rounded-full bg-blue-600 hover:bg-blue-700 
+          text-white text-[12px] font-semibold 
+          px-3 py-[4px]
+        ">
+          0 SOL
+        </button>
+      </div>
+
+    </div>
   );
 };
