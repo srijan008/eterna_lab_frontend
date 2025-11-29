@@ -21,6 +21,7 @@ export interface Token {
   liquidityLabel?: string;   // "$22.4K"
   change24hLabel?: string;   // "+12%" or "-5%"
   ageLabel?: string;         // "2m", "5s", "1h"
+  chain?: string;  // <-- NEW FIELD
 
   // Category for tabs
   category?: "NEW_PAIRS" | "FINAL_STRETCH" | "MIGRATED";
